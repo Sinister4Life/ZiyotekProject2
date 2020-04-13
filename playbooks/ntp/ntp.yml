@@ -1,0 +1,29 @@
+---
+- name: setup ntp
+  hosts: all !prdx-ntp15 !prdx-ntp25
+  become: true
+  
+  tasks:
+  - name: remove chrony
+    yum:
+      name: chrony
+      state: absent
+  - name: install ntp
+    yum:
+      name: ntp
+      state: latest
+  - name: start ntp
+    service:
+      name: ntpd
+      state: started
+      enabled: yes
+  - name: copy ntp config
+    copy:
+      src: /etc/ntp.conf
+      dest: /etc/ntp.conf
+      follow: yes
+
+  - name: restart ntpd
+    service:
+      name: ntpd
+      state: restarted
